@@ -4,7 +4,7 @@ import StepLabel from "@material-ui/core/StepLabel";
 import Stepper from "@material-ui/core/Stepper";
 import { makeStyles } from "@material-ui/core/styles";
 import * as React from "react";
-import { minimumValue, phoneValidation, regexValdication, required } from "../utils/validations";
+import { minimumValue, regexValdication, required } from "../utils/validations";
 import AddressInfo from "./AddressInfo";
 import UserDetail from "./UserDetail";
 import UserInformation from "./UserInformation";
@@ -58,50 +58,67 @@ const StepperForm = () => {
     });
   };
   const handleNext = () => {
-    let err = {}
+    let err = {};
     if (activeStep === 0) {
       Object.keys(userDetails.userInformation).forEach((info) => {
         let value = userDetails.userInformation[info];
         if (required(value)) {
           err = {
             ...err,
-            [info]: `${info} is required`
-          }
+            [info]: `${info} is required`,
+          };
         }
-        console.log(err)
-        if ((info === 'firstname' || info === 'middlename' || info === 'lastname') && !err[info]) {
+        if (
+          (info === "firstname" ||
+            info === "middlename" ||
+            info === "lastname") &&
+          !err[info]
+        ) {
           if (minimumValue(value, 3)) {
             err = {
               ...err,
-              [info]: `${info} must have 3 characters`
-            }
+              [info]: `${info} must have 3 characters`,
+            };
           }
         }
-        if ((info === 'mobilenumber') && !err[info]) {
-          if (regexValdication(value, '/^\d{10}$/')) {
+        if (info === "mobilenumber" && !err[info]) {
+          if (regexValdication(value, /^[0-9]{10}$/)) {
             err = {
               ...err,
-              [info]: `${info} must have 10 digits`
-            }
+              [info]: `${info} must have 10 digits`,
+            };
           }
         }
-        if (info === 'email' && !err[info]) {
-          if (regexValdication(value, '/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/')) {
+        if (info === "email" && !err[info]) {
+          if (
+            regexValdication(
+              value,
+              /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/
+            )
+          ) {
             err = {
               ...err,
-              [info]: `Invalid Email Address`
-            }
+              [info]: `Invalid Email Address`,
+            };
           }
         }
-      })
+      });
+    } else if (activeStep === 1) {
+      Object.keys(userDetails.addressDetails).forEach((info) => {
+        let value = userDetails.addressDetails[info];
+        if (required(value)) {
+          err = {
+            ...err,
+            [info]: `${info} is required`,
+          };
+        }
+      });
     }
     if (Object.keys(err).length) {
-      setError(err)
+      setError(err);
     } else {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
-    console.log(err)
-    // 
   };
 
   const handleBack = () => {
@@ -113,29 +130,20 @@ const StepperForm = () => {
         return (
           <UserInformation
             userDetails={userDetails}
-            setUserDetails={setUserDetails}
             handleChange={handleChange}
             error={error}
-            setError={setError}
           />
         );
       case 1:
         return (
           <AddressInfo
             userDetails={userDetails}
-            setUserDetails={setUserDetails}
             handleChange={handleChange}
             error={error}
-            setError={setError}
           />
         );
       case 2:
-        return (
-          <UserDetail
-            userDetails={userDetails}
-            setUserDetails={setUserDetails}
-          />
-        );
+        return <UserDetail userDetails={userDetails} />;
       default:
         throw new Error("Unknown step");
     }

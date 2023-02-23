@@ -10,30 +10,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddressInfo = ({ userDetails, setUserDetails, handleChange }) => {
+const AddressInfo = ({ userDetails, handleChange, error }) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-    <Grid container spacing={3}>
-      {addressFormFields.map((item) => {
-        return (
-          <Grid item xs={12} sm={6}>
-            <FormFields
-              id={item.id}
-              label={item.label}
-              placeholder={item.placeholder}
-              type={item.type}
-              options={item.options}
-              values={userDetails.userInformation}
-              handleChange={handleChange}
-              valueField="addressDetails"
-            />
-          </Grid>
-        );
-      })}
-    </Grid>
-  </div>
-  )
-}
+      <Grid container spacing={3}>
+        {addressFormFields.map((item) => {
+          return (
+            <Grid item xs={12} sm={6}>
+              <FormFields
+                id={item.id}
+                label={item.label}
+                placeholder={item.placeholder}
+                type={item.type}
+                options={item.options}
+                values={userDetails.userInformation}
+                handleChange={handleChange}
+                valueField="addressDetails"
+                error={error}
+              />
+            </Grid>
+          );
+        })}
+      </Grid>
+    </div>
+  );
+};
 
-export default AddressInfo
+export default AddressInfo;

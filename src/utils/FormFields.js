@@ -1,6 +1,7 @@
 import {
   FormControl,
   FormControlLabel,
+  FormHelperText,
   FormLabel,
   InputLabel,
   Radio,
@@ -9,7 +10,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import React from "react";
-import moment from 'moment'
+import moment from "moment";
 
 const FormFields = ({
   id,
@@ -20,10 +21,13 @@ const FormFields = ({
   values,
   handleChange,
   valueField,
+  error,
 }) => {
   return type === "select" ? (
     <FormControl variant="outlined" fullWidth>
-      <InputLabel htmlFor={`outlined-${label}-native-simple`}>{label}</InputLabel>
+      <InputLabel htmlFor={`outlined-${label}-native-simple`}>
+        {label}
+      </InputLabel>
       <Select
         value={values[id]}
         id={id}
@@ -32,15 +36,19 @@ const FormFields = ({
           handleChange(event, valueField, id);
         }}
         inputProps={{
-          name: { label },
           id: `outlined-${label}-native-simple`,
+          "aria-label": `${label}`,
         }}
-        InputLabelProps={{ shrink: true }}
       >
         {options.map((bg, index) => (
-          <option value={bg} key={index}>{bg}</option>
+          <option value={bg} key={index}>
+            {bg}
+          </option>
         ))}
       </Select>
+      {error[id] && (
+        <FormHelperText error={error[id]}>{error[id]}</FormHelperText>
+      )}
     </FormControl>
   ) : type === "radio" ? (
     <FormControl component="fieldset">
@@ -56,15 +64,20 @@ const FormFields = ({
         {options.map((item) => (
           <FormControlLabel
             value={item}
+            key={item}
             control={<Radio id={id} />}
             label={item}
           />
         ))}
       </RadioGroup>
+      {error[id] && (
+        <FormHelperText error={error[id]}>{error[id]}</FormHelperText>
+      )}
     </FormControl>
   ) : (
     <TextField
-      // error
+      error={error[id]}
+      helperText={error[id] ? error[id] : ""}
       onChange={(event) => {
         handleChange(event, valueField);
       }}
@@ -75,9 +88,12 @@ const FormFields = ({
       label={label}
       placeholder={placeholder}
       InputLabelProps={{ shrink: true }}
-      // helperText="Incorrect entry."
       variant="outlined"
-      InputProps={type==='date' ? {inputProps: { max: moment(new Date()).format("YYYY-MM-DD")} } : {}}
+      InputProps={
+        type === "date"
+          ? { inputProps: { max: moment(new Date()).format("YYYY-MM-DD") } }
+          : {}
+      }
     />
   );
 };

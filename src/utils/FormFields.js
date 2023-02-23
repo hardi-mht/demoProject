@@ -2,12 +2,14 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  InputLabel,
   Radio,
   RadioGroup,
   Select,
   TextField,
 } from "@material-ui/core";
 import React from "react";
+import moment from 'moment'
 
 const FormFields = ({
   id,
@@ -20,21 +22,23 @@ const FormFields = ({
   valueField,
 }) => {
   return type === "select" ? (
-    <FormControl fullWidth>
+    <FormControl variant="outlined" fullWidth>
+      <InputLabel htmlFor={`outlined-${label}-native-simple`}>{label}</InputLabel>
       <Select
         value={values[id]}
         id={id}
         variant="outlined"
         onChange={(event) => {
-          handleChange(event, valueField);
+          handleChange(event, valueField, id);
         }}
-        // inputProps={{ "aria-label": "bloodgroup" }}
+        inputProps={{
+          name: { label },
+          id: `outlined-${label}-native-simple`,
+        }}
+        InputLabelProps={{ shrink: true }}
       >
-        <option value="a" disabled>
-          Blood Group
-        </option>
         {options.map((bg, index) => (
-          <option value={index}>{bg}</option>
+          <option value={bg} key={index}>{bg}</option>
         ))}
       </Select>
     </FormControl>
@@ -73,6 +77,7 @@ const FormFields = ({
       InputLabelProps={{ shrink: true }}
       // helperText="Incorrect entry."
       variant="outlined"
+      InputProps={type==='date' ? {inputProps: { max: moment(new Date()).format("YYYY-MM-DD")} } : {}}
     />
   );
 };

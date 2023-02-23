@@ -117,6 +117,7 @@ const StepperForm = () => {
     if (Object.keys(err).length) {
       setError(err);
     } else {
+setError({});
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
